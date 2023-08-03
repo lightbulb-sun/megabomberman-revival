@@ -18,8 +18,18 @@ NUM_INVINCIBILITY_FRAMES        = $80
 DIRECTION_SOUTH                 = $02
 CHARACTER_APPEARANCE_ALIVE      = $00
 
+JOYPAD_HELD_BUTTONS             = $ffa932
+JOYPAD_MASK_DPAD                = $0f
+
+DELAY                           = $ffff80
+NUM_DELAY_FRAMES                = 30
+
     org 0
     incbin "megabomberman.md"
+
+    org $243e
+            jsr         dpad
+            nop
 
     org $31c2
             jmp         my_code
@@ -52,4 +62,22 @@ my_code:
             move.b      NUM_LIVES, d0
             sub.b       #$1, d0
             move.b      d0, NUM_LIVES
+
+            move.b      NUM_DELAY_FRAMES, DELAY
+
+            rts
+
+
+dpad:
+            tst.b       DELAY
+            beq         .cont
+            move.b      DELAY, d0
+            sub.b       #1, d0
+            move.b      d0, DELAY
+            move.b      #0, d0
+            rts
+.cont
+            ; replace original instructions
+            move.b      JOYPAD_HELD_BUTTONS, d0
+            andi.b      #JOYPAD_MASK_DPAD, d0
             rts
