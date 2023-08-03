@@ -22,7 +22,7 @@ CHARACTER_APPEARANCE_ALIVE      = $00
     incbin "megabomberman.md"
 
     org $31c2
-            jsr         my_code
+            jmp         my_code
             nop
 
     org $ffa00
@@ -31,7 +31,7 @@ my_code:
             bne         .respawn
             ; replace original instruction
             move.l      #GAME_STATE_DEAD, (OFFSET_GAME_STATE, a4)
-            rts
+            jmp         $31ca
 .respawn
             ; set state to alive
             move.l      #GAME_STATE_ALIVE, (OFFSET_GAME_STATE, a4)
